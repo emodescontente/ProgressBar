@@ -8,13 +8,21 @@ print("Progress bar: input your tasks to make your life easier!")
 tasks = ["Give cat food", "Pet the panda", "Trow a ball to clippy"]
 
 print("Please, input your task type: ")
-print("Unique: tasks that only need 1 step.")
-print("Various: tasks that need various steps.")
-print("Time: tasks that only need time.")
+print("Unique: tasks that only need complete 1 time. Ex: Feed the cat.")
+print("Various: tasks that need complete various times. Ex: Homeworks done.")
+print("Time: tasks that need time. Ex: Study time.")
 # isso também
 task_type = "Unique"
 
 # Condições para o código funcionar
+
+if task_type == "Unique":
+    print(f"You have: {len(tasks)} tasks remain")
+    for remain in range(len(tasks)):
+        print(tasks[remain])
+    done = 0
+    
+
 if task_type == "Various":
     print("Please, input the quantity of tasks")
 
@@ -22,7 +30,7 @@ if task_type == "Time":
     print("Please, input your time needed")
 
 # Início da lógica
-tasks_compleeted = 3
+tasks_compleeted = 0
 progress = int((tasks_compleeted / len(tasks)) * 100)
 
 print(f"Progress: {progress}%")
