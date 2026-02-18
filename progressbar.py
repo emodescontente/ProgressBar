@@ -7,10 +7,10 @@ print("Progress bar: input your tasks to make your life easier!")
 # Mudar isso para input mais tarde, depois dos testes
 tasks = ["Give cat food", "Pet the panda", "Trow a ball to clippy"]
 
+tasks_remaining = len(tasks)
+
 for i in tasks:
     print(i)
-
-tasks_remaining = len(tasks)
 
 print("Please, input your task type: ")
 print("Unique: tasks that only need complete 1 time. Ex: Feed the cat.")
@@ -23,11 +23,9 @@ tasks_compleeted = 0
 
 # Condições para o código funcionar
 if task_type == "Unique":
-    task_done = 1
-    done = 2
-    for pop in range(done - 1):
-        tasks.pop(pop)
-    tasks_compleeted += task_done
+    done = [1,2,0]
+    tasks = [task for i, task in enumerate(tasks) if i not in done]
+    tasks_compleeted += len(done)
 
     
 
@@ -40,14 +38,15 @@ if task_type == "Time":
 # Início da lógica
 tasks_lenght = len(tasks)
 
+
 progress = int((tasks_compleeted / tasks_remaining) * 100)
 
 
-print(f"You have {tasks_lenght - 1} tasks remaining:")
-for remaining in range(tasks_lenght - 1):
+print(f"You have {tasks_lenght} tasks remaining:")
+for remaining in range(tasks_lenght):
         print(tasks[remaining])
 
 print(f"Progress: {progress}%")
 
 if progress == 100:
-    print("Comgratulations, you did all the tasks!")
+    print("Congratulations, you did all the tasks!")
