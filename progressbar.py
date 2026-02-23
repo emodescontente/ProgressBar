@@ -1,5 +1,12 @@
 from timer import countdown_timer
 
+def get_task():
+    while True:
+        valor = input("> ")
+        if valor != "":
+            return valor
+        print("Please, type something.")
+
 # ritual de início
 print("Hello, world!")
 
@@ -10,15 +17,15 @@ Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [progress] when you want to check the progress done.
 Type [help] to a reminder of the comamnds.
-Type [end] to end program.
+Type [close] to end program.
 """)
 
-command_list = ["ADD", "DEL", "DONE", "PROGRESS", "HELP", "END"]
+command_list = ["ADD", "DEL", "DONE", "PROGRESS", "HELP", "CLOSE"]
 
 
 user_input = input("> ").strip().upper()
 
-while user_input not in command_list or user_input not in ["ADD", "HELP", "END"]:
+while user_input not in command_list or user_input not in ["ADD", "HELP", "CLOSE"]:
     if user_input not in command_list:
         print("Please, type a valid command.")
         user_input = (input("> ").strip().upper())
@@ -30,7 +37,7 @@ while user_input not in command_list or user_input not in ["ADD", "HELP", "END"]
 tasks = []
 task_type = ""
 
-while user_input != "END":
+while user_input != "CLOSE":
     match user_input:
         case "HELP":
             print("""
@@ -40,11 +47,11 @@ Type [done] and the task number when you complete one task (done a timed task wi
 Type [progress] when you want to check the progress done.
 Type [help] to a reminder of the comamnds.
     """)
-            user_input = input("> ")
+            user_input = input("> ").strip().upper()
 
         case "ADD":
             description = """
-Please, input your task type andthe task.
+Please, input your task type and the task.
 Types:
 [S] Single: tasks that only need complete 1 time. Example: Feed the cat.
 [C] CheckList: tasks that need complete various times. Example: Homeworks done.
@@ -56,40 +63,40 @@ Type [end] to stop inputing tasks.
             print(description)
 
             # Recolhe o tipo de task
-            task_input = (input("> "))
+            task_input = get_task()
 
-            parts = task_input.split(maxsplit=1)
-
-            parts[0].strip().upper()
-
-            while len(parts) < 2:
-                print("Please, input both the task type and the task name (don't put space in the start, like: > a, >a).")
-
-                task_input = (input("> "))
-
-                parts = task_input.split(maxsplit=1)
-
-                parts[0] = parts[0].upper()
-
-
-            while parts[0] not in ["C", "S", "T"]:
-                print("Please, input a valid type")
-                parts[0] = (input("> ")).upper()
-
-            print(parts)
-
-            while tasks_input in ["END", ""] and tasks == []:
-                print("You need at least 1 task to continue")
-                tasks_input = (input("> ")).strip().upper()
-
-        # Recebe o input do usuário e coloca na lista (colocar opção de remover mais tarde)
             num = 0
-            while tasks_input != "end":
-                tasks.append(tasks_input)
+            while task_input != "end":
+
+                # Divide no primeiro espaço que encontrar num array
+                parts = task_input.split(maxsplit=1)
+                
+                parts[0] = parts[0].strip().upper()
+
+                # Previnir qualquer erro
+                while len(parts) < 2 or parts[0] not in ["C", "S", "T"]:
+
+                    if len(parts) < 2:
+                        print("Please, input both the task type and the task name.")
+
+                        task_input = get_task()
+
+                        parts = task_input.split(maxsplit=1)
+
+                        parts[0] = parts[0].strip().upper()
+
+                    if parts[0] not in ["C", "S", "T"]:
+                        print("Please, input a valid type (only the type)")
+                        parts[0] = (input("> ")).strip().upper()
+
+                tasks.append(task_input)
                 for i in tasks:
                     num +=1 
+                    print("")
                     print(f"{num}. {i}")
-                tasks_input = (input("Continue: "))
+                print("")
+                print("Continue:")
+                task_input = get_task()
                 num = 0
 
             # Pega o tamanho inicial das tasks
