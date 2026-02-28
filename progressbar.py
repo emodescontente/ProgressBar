@@ -23,21 +23,23 @@ Type [close] to end program.
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "HELP", "CLOSE"]
 
 
-user_input = input("> ").strip().upper()
-
-while user_input not in command_list or user_input not in ["ADD", "HELP", "CLOSE"]:
-    if user_input not in command_list:
-        print("Please, type a valid command.")
-        user_input = (input("> ").strip().upper())
-
-    if user_input not in ["ADD", "HELP", "END"]:
-        print("Try start by adding tasks with [add]")
-        user_input = input("> ").strip().upper()
 
 tasks = []
 task_type = ""
 
 while user_input != "CLOSE":
+    user_input = input("> ").strip().upper()
+
+    while user_input not in command_list or user_input not in ["ADD", "HELP", "CLOSE"]:
+        if user_input not in command_list:
+            print("Please, type a valid command.")
+            user_input = (input("> ").strip().upper())
+
+        if user_input not in ["ADD", "HELP", "END"]:
+            print("Try start by adding tasks with [add]")
+            user_input = input("> ").strip().upper()
+
+
     match user_input:
         case "HELP":
             print("""
