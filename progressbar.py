@@ -1,6 +1,6 @@
 from timer import countdown_timer
 
-def get_task():
+def get_input():
     while True:
         valor = input("> ")
         if valor != "":
@@ -16,21 +16,22 @@ Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [progress] when you want to check the progress done.
-Type [help] to a reminder of the comamnds.
 Type [close] to end program.
 """)
+command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP"]
 
-command_list = ["ADD", "DEL", "DONE", "PROGRESS", "HELP", "CLOSE"]
-
-
-
+user_input = ""
+tasks_compleeted = 0
 tasks = []
-task_type = ""
 
 while user_input != "CLOSE":
+    print("""
+Type [help] if you need a reminder of the commands.
+          """)
+    
     user_input = input("> ").strip().upper()
 
-    while user_input not in command_list or user_input not in ["ADD", "HELP", "CLOSE"]:
+    while user_input not in command_list or (user_input not in ["ADD", "HELP", "CLOSE"] and tasks == []):
         if user_input not in command_list:
             print("Please, type a valid command.")
             user_input = (input("> ").strip().upper())
@@ -47,7 +48,7 @@ Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [progress] when you want to check the progress done.
-Type [help] to a reminder of the comamnds.
+Type [close] to end the program.
     """)
             user_input = input("> ").strip().upper()
 
@@ -65,7 +66,7 @@ Type [end] to stop inputing tasks.
             print(description)
 
             # Recolhe o tipo de task
-            task_input = get_task()
+            task_input = get_input()
 
             num = 0
             while task_input != "end":
@@ -81,7 +82,7 @@ Type [end] to stop inputing tasks.
                     if len(parts) < 2:
                         print("Please, input both the task type and the task name.")
 
-                        task_input = get_task()
+                        task_input = get_input()
 
                         parts = task_input.split(maxsplit=1)
 
@@ -98,46 +99,45 @@ Type [end] to stop inputing tasks.
                     print(f"{num}. {i}")
                 print("")
                 print("Continue:")
-                task_input = get_task()
+                print("")
+                task_input = get_input()
                 num = 0
 
-            # Pega o tamanho inicial das tasks
-            tasks_remaining = len(tasks)
+        case "DEL":
+            num = 0
+            print("""
+Type the number of the task to delete it.
+Type [end] to stop.                
+                  """)
+            del_input = ""
+            while del_input != "END":
+                for task in tasks:
+                    num += 1
+                    print(f"{num}. {task}")
+                del_input = get_input().strip().upper()
+                del_input = int(del_input)
+                tasks.pop(del_input - 1)
+                num = 0
 
-            for i in tasks:
-                print(i)
+                if tasks == []:
+                    print ("You deleted all thetasks.")
+                    del_input = "end"
 
+        case "PROGRESS": 
+             # Pega o tamanho atual das tasks
+                tasks_lenght = len(tasks)
 
-tasks_compleeted = 0
+                progress = int((tasks_compleeted / tasks_lenght) * 100)
 
-# Condições para o código funcionar lol
-if task_type == "S":
-    done = []
-    tasks = [task for i, task in enumerate(tasks) if i not in done]
-    tasks_compleeted += len(done)
+                if progress < 100:
+                    print(f"You have {tasks_lenght} tasks remaining:")
 
-    
+                    num = 0
+                    for remaining in range(tasks_lenght):
+                        num += 1    
+                        print(f"{num}. {tasks[remaining]}")
 
-# Início da lógica
+                    print(f"Progress: {progress}%")
 
-# Pega o tamanho atual das tasks
-tasks_lenght = len(tasks)
-
-if user_input == "PROGRESS":
-    # %
-    progress = int((tasks_compleeted / tasks_remaining) * 100)
-
-    if progress < 100:
-        print(f"You have {tasks_lenght} tasks remaining:")
-
-        num = 0
-        for remaining in range(tasks_lenght):
-            num += 1    
-            print(f"{num}. {tasks[remaining]}")
-
-
-
-    print(f"Progress: {progress}%")
-
-    if progress == 100:
-        print("Congratulations, you did all the tasks!")
+                    if progress == 100:
+                        print("Congratulations, you did all the tasks!")
