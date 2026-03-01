@@ -7,10 +7,7 @@ def get_input():
             return valor
         print("Please, type something.")
 
-def get_task_done():
-    i = 0
-    if i:
-        return 0
+
 
 # ritual de início
 print("Hello, world!")
@@ -31,6 +28,8 @@ task_done = []
 tasks = []
 
 while user_input != "CLOSE":
+
+
     print("""
 Type [help] if you need a reminder of the commands.
           """)
@@ -67,21 +66,24 @@ Type [end] to stop.
                   """)
 
             done_input = ""
-
             while done_input != "END":
                 done_input = get_input().strip().upper()
-
+                if done_input == "END":
+                    break
                 try:
                     done_input = int(done_input)
-                except:
+                except ValueError:
                     done_input = 0
 
-                if done_input > 0 and done_input < len(tasks):
-                    task_done.add(done_input)
+                if done_input > 0 and done_input <= len(tasks):
+                    task_done.append(done_input)
+                    for i in task_done:
+                        status = "Unfinished"
+
                     print("")
                     print("Continue:")
                     print("")
-                    print(task_done)
+                    
                 else:
                     print("")
                     print("Please, type a valid number inside the tasks index.")
@@ -178,7 +180,7 @@ If yes, type [y], else type anyting.
 
                 print("")
 
-                progress = int((tasks_done / len(task)) * 100)
+                progress = int((tasks_done / len(tasks)) * 100)
 
                 num = 0
                 for remaining in range(len(tasks)):
