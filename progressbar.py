@@ -7,6 +7,11 @@ def get_input():
             return valor
         print("Please, type something.")
 
+def get_task_done():
+    i = 0
+    if i:
+        return 0
+
 # ritual de início
 print("Hello, world!")
 
@@ -15,13 +20,14 @@ print("""Wellcome to Progress Bar!
 Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
-Type [progress] when you want to check the progress done.
+Type [progress] when you want to check the tasks and the progress done.
+Type [clear] to delete all the tasks.
 Type [close] to end program.
 """)
-command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP"]
+command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR"]
 
 user_input = ""
-tasks_compleeted = 0
+task_done = []
 tasks = []
 
 while user_input != "CLOSE":
@@ -44,13 +50,43 @@ Type [help] if you need a reminder of the commands.
     match user_input:
         case "HELP":
             print("""
+                  
 Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [progress] when you want to check the progress done.
 Type [close] to end the program.
-    """)
-            user_input = input("> ").strip().upper()
+
+                  """)
+            
+        case "DONE":
+
+            print("""
+Type the number of the task you want to mark as done.
+Type [end] to stop.
+                  """)
+
+            done_input = ""
+
+            while done_input != "END":
+                done_input = get_input().strip().upper()
+
+                try:
+                    done_input = int(done_input)
+                except:
+                    done_input = 0
+
+                if done_input > 0 and done_input < len(tasks):
+                    task_done.add(done_input)
+                    print("")
+                    print("Continue:")
+                    print("")
+                    print(task_done)
+                else:
+                    print("")
+                    print("Please, type a valid number inside the tasks index.")
+                    print("")         
+            
 
         case "ADD":
             description = """
@@ -123,21 +159,33 @@ Type [end] to stop.
                     print ("You deleted all thetasks.")
                     del_input = "end"
 
+        case "CLEAR":
+            print("""
+Are you sure that you want to clear all the tasks?
+If yes, type [y], else type anyting.
+""")
+            clear_input = get_input().strip().upper()
+
+            if clear_input == "Y":
+                tasks = []
+
+                print("")
+                print("All tasks has been deleted.")
+                print("")
+
         case "PROGRESS": 
-             # Pega o tamanho atual das tasks
-                tasks_lenght = len(tasks)
+                tasks_done = task_done
 
-                progress = int((tasks_compleeted / tasks_lenght) * 100)
+                print("")
 
-                if progress < 100:
-                    print(f"You have {tasks_lenght} tasks remaining:")
+                progress = int((tasks_done / len(task)) * 100)
 
-                    num = 0
-                    for remaining in range(tasks_lenght):
-                        num += 1    
-                        print(f"{num}. {tasks[remaining]}")
+                num = 0
+                for remaining in range(len(tasks)):
+                    num += 1    
+                    print(f"{num}. {tasks[remaining]}")
 
-                    print(f"Progress: {progress}%")
+                print(f"Progress: {progress}%")
 
-                    if progress == 100:
-                        print("Congratulations, you did all the tasks!")
+                if progress == 100:
+                    print("Congratulations, you did all the tasks!")
