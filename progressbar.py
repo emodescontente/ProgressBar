@@ -7,7 +7,9 @@ def get_input():
             return valor
         print("Please, type something.")
 
-
+def p():
+    print("")
+    return 0
 
 # ritual de início
 print("Hello, world!")
@@ -17,14 +19,15 @@ print("""Wellcome to Progress Bar!
 Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
+Type [undo] to undo a task.
 Type [progress] when you want to check the tasks and the progress done.
 Type [clear] to delete all the tasks.
 Type [close] to end program.
 """)
-command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR"]
+command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO"]
 
 user_input = ""
-task_done = []
+tasks_done = []
 tasks = []
 
 while user_input != "CLOSE":
@@ -53,20 +56,19 @@ Type [help] if you need a reminder of the commands.
 Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
+Type [undo] to undo a task.
 Type [progress] when you want to check the progress done.
 Type [close] to end the program.
-
                   """)
-            
         case "DONE":
 
             print("""
 Type the number of the task you want to mark as done.
-Type [end] to stop.
-                  """)
+Type [end] to stop.""")
 
             done_input = ""
-            while done_input != "END":
+            while True:
+                p()
                 done_input = get_input().strip().upper()
                 if done_input == "END":
                     break
@@ -74,20 +76,28 @@ Type [end] to stop.
                     done_input = int(done_input)
                 except ValueError:
                     done_input = 0
-
-                if done_input > 0 and done_input <= len(tasks):
-                    task_done.append(done_input)
-                    for i in task_done:
-                        status = "Unfinished"
-
-                    print("")
-                    print("Continue:")
-                    print("")
-                    
-                else:
-                    print("")
+                    p()
                     print("Please, type a valid number inside the tasks index.")
-                    print("")         
+                    continue
+
+                if done_input in tasks_done:
+                    p()
+                    print("This task is already done.")
+                    continue
+
+                if 0 < done_input <= len(tasks):
+                    tasks_done.append(done_input)
+                    for num, task in enumerate(tasks, 1):
+                        status = "Done" if num in tasks_done else "Unfinished"
+                        print(f"{num}. {task}: {status}")
+
+                    p()
+                    print("Continue:")
+
+                else:
+                    p()
+                    print("Please, type a valid number inside the tasks index.")
+     
             
 
         case "ADD":
@@ -133,11 +143,11 @@ Type [end] to stop inputing tasks.
                 tasks.append(task_input)
                 for i in tasks:
                     num +=1 
-                    print("")
+                    p()
                     print(f"{num}. {i}")
-                print("")
+                p()
                 print("Continue:")
-                print("")
+                p()
                 task_input = get_input()
                 num = 0
 
@@ -171,16 +181,15 @@ If yes, type [y], else type anyting.
             if clear_input == "Y":
                 tasks = []
 
-                print("")
+                p()
                 print("All tasks has been deleted.")
-                print("")
+                p()
 
         case "PROGRESS": 
-                tasks_done = task_done
 
-                print("")
+                p()
 
-                progress = int((tasks_done / len(tasks)) * 100)
+                progress = int((len(tasks_done) / len(tasks)) * 100)
 
                 num = 0
                 for remaining in range(len(tasks)):
