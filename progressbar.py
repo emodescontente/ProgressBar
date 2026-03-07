@@ -16,43 +16,43 @@ print("Hello, world!")
 
 # Agora, começo do projeto PROGRESS BAR, HELL YEAH1!1!!!1111!1
 print("""Wellcome to Progress Bar!
-Type [add] to enter your tasks (1 per time).
+Type [add] to enter your tasks.
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [undo] to undo a task.
 Type [progress] when you want to check the tasks and the progress done.
 Type [clear] to delete all the tasks.
-Type [close] to end program.
-""")
+Type [close] to end program.""")
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO"]
 
 user_input = ""
 tasks_done = []
 tasks = []
+print("""
+Type [help] if you need a reminder of the commands.""")
 
-while user_input != "CLOSE":
+while True:
+    p()
+    user_input = get_input().strip().upper()
+
+    if user_input == "CLOSE":
+        break
 
 
-    print("""
-Type [help] if you need a reminder of the commands.
-          """)
-    
-    user_input = input("> ").strip().upper()
+    if user_input not in command_list:
+        p()
+        print("Please, type a valid command.")
+        continue
 
-    while user_input not in command_list or (user_input not in ["ADD", "HELP", "CLOSE"] and tasks == []):
-        if user_input not in command_list:
-            print("Please, type a valid command.")
-            user_input = (input("> ").strip().upper())
-
-        if user_input not in ["ADD", "HELP", "END"]:
-            print("Try start by adding tasks with [add]")
-            user_input = input("> ").strip().upper()
+    if user_input not in ["ADD", "HELP", "END"] and tasks == []:
+        p()
+        print("Try start by adding tasks with [add]")
+        continue
 
 
     match user_input:
         case "HELP":
             print("""
-                  
 Type [add] to enter your tasks (1 per time).
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
@@ -66,7 +66,10 @@ Type [close] to end the program.
 Type the number of the task you want to mark as done.
 Type [end] to stop.""")
 
-            done_input = ""
+            for num, task in enumerate(tasks, 1):
+                status = "Done" if num in tasks_done else "Unfinished"
+                print(f"{num}. {task}: {status}")
+
             while True:
                 p()
                 done_input = get_input().strip().upper()
@@ -87,6 +90,7 @@ Type [end] to stop.""")
 
                 if 0 < done_input <= len(tasks):
                     tasks_done.append(done_input)
+
                     for num, task in enumerate(tasks, 1):
                         status = "Done" if num in tasks_done else "Unfinished"
                         print(f"{num}. {task}: {status}")
@@ -113,63 +117,69 @@ Type [end] to stop inputing tasks.
 
             print(description)
 
-            # Recolhe o tipo de task
-            task_input = get_input()
 
-            num = 0
-            while task_input != "end":
+            while True:
+                task_input = get_input()
+                p()
 
+                task_ender = task_input.strip().upper()
+                if task_ender == "END":
+                    break
                 # Divide no primeiro espaço que encontrar num array
                 parts = task_input.split(maxsplit=1)
                 
                 parts[0] = parts[0].strip().upper()
 
-                # Previnir qualquer erro
-                while len(parts) < 2 or parts[0] not in ["C", "S", "T"]:
+                if len(parts) < 2:
+                    print("Please, input both the task type and the task name.")
+                    continue
 
-                    if len(parts) < 2:
-                        print("Please, input both the task type and the task name.")
+                if parts[0] not in ["C", "S", "T"]:
+                    print("Please, input a valid type")
+                    continue
 
-                        task_input = get_input()
-
-                        parts = task_input.split(maxsplit=1)
-
-                        parts[0] = parts[0].strip().upper()
-
-                    if parts[0] not in ["C", "S", "T"]:
-                        print("Please, input a valid type (only the type)")
-                        parts[0] = (input("> ")).strip().upper()
-
-                tasks.append(task_input)
-                for i in tasks:
-                    num +=1 
-                    p()
+                tasks.append(parts[0] + " " + parts[1])
+                for num, i in enumerate(tasks, 1):
                     print(f"{num}. {i}")
                 p()
                 print("Continue:")
                 p()
-                task_input = get_input()
-                num = 0
-
+                continue   
+            
         case "DEL":
-            num = 0
-            print("""
-Type the number of the task to delete it.
-Type [end] to stop.                
-                  """)
-            del_input = ""
-            while del_input != "END":
-                for task in tasks:
-                    num += 1
-                    print(f"{num}. {task}")
+            print("""  
+Type the number of the task to delete it.  
+Type [end] to stop.        
+                  """) 
+            del_input = "" 
+            while True:
+                for num, task in enumerate(tasks, 1):  
+                    status = "Done" if num in tasks_done else "Unfinished" 
+                    print(f"{num}. {task}: {status}")  
+                p()
                 del_input = get_input().strip().upper()
-                del_input = int(del_input)
+                if del_input == "END":
+                    break
+
+                try:
+                    del_input = int(del_input)
+                except ValueError:
+                    p()
+                    print("That's not a number.")
+                    p()
+                    continue
+
                 tasks.pop(del_input - 1)
-                num = 0
+
+                for i, done_reduce in enumerate(tasks_done):
+                    if done_reduce > del_input:
+                        tasks_done[i] = tasks_done[i] - 1
+                    elif done_reduce == del_input:
+                        tasks_done.pop(i)
 
                 if tasks == []:
-                    print ("You deleted all thetasks.")
-                    del_input = "end"
+                    print ("You deleted all the tasks.")
+                    break
 
         case "CLEAR":
             print("""
@@ -180,7 +190,6 @@ If yes, type [y], else type anyting.
 
             if clear_input == "Y":
                 tasks = []
-
                 p()
                 print("All tasks has been deleted.")
                 p()
@@ -191,10 +200,9 @@ If yes, type [y], else type anyting.
 
                 progress = int((len(tasks_done) / len(tasks)) * 100)
 
-                num = 0
-                for remaining in range(len(tasks)):
-                    num += 1    
-                    print(f"{num}. {tasks[remaining]}")
+                for num, task in enumerate(tasks, 1):
+                    status = "Done" if num in tasks_done else "Unfinished"
+                    print(f"{num}. {task}: {status}")
 
                 print(f"Progress: {progress}%")
 
