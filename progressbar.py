@@ -262,3 +262,15 @@ If yes, type [y], else type anyting.
         case "PROGRESS": 
             p()
             ShowTaskList()
+            tasks_done = 0
+
+            for t in tasks:
+                if t["status"] == "Done":
+                    tasks_done += 1
+
+            progress = int(tasks_done / len(tasks) * 100)
+            p()
+            print(f"Progress: {progress}%")
+
+            if progress == 100:
+                print("Congratulations, you did all the tasks!")
