@@ -25,9 +25,9 @@ Type [clear] to delete all the tasks.
 Type [close] to end program.""")
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO"]
 
-user_input = ""
-tasks_done = []
-tasks = []
+
+tasks_done = [1, 2, 3]
+tasks = ["S Cavalo", "S poney", "S Unicorno"]
 print("""
 Type [help] if you need a reminder of the commands.""")
 
@@ -49,7 +49,10 @@ while True:
         print("Try start by adding tasks with [add]")
         continue
 
-
+    if user_input == "UNDO" and tasks_done == []:
+        p()
+        print("No task is done, type [done] if you want mark a task as done.")
+        continue
     match user_input:
         case "HELP":
             print("""
@@ -58,8 +61,7 @@ Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [undo] to undo a task.
 Type [progress] when you want to check the progress done.
-Type [close] to end the program.
-                  """)
+Type [close] to end the program.""")
         case "DONE":
 
             print("""
@@ -101,8 +103,43 @@ Type [end] to stop.""")
                 else:
                     p()
                     print("Please, type a valid number inside the tasks index.")
-     
-            
+
+        case "UNDO":
+            while True:
+                p()
+                print("Type the number of the task you want to undo.")
+                print("Type [end] to stop.")
+                for num, task in enumerate(tasks, 1):
+                    status = "Done" if num in tasks_done else "Unfinished"
+                    print(f"{num}. {task}: {status}")
+
+                undo_input = get_input().strip().upper()
+
+                if undo_input == "END":
+                    break
+
+                try:
+                    undo_input = int(undo_input)
+                except ValueError:
+                    p()
+                    print("That's not a number.")
+                    continue
+                if undo_input not in tasks_done:
+                    p()
+                    print("That task is not done.")
+                    continue
+                if 0 > undo_input > max(tasks_done):
+                    p()
+                    print("Please, type a valid number inside the index.")
+                    continue
+
+                print(tasks_done)
+
+                for num, task_done in enumerate(tasks_done):
+                    if task_done == undo_input:
+                        tasks_done.pop(num)
+
+                print(tasks_done)
 
         case "ADD":
             description = """
