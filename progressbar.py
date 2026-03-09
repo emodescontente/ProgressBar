@@ -11,12 +11,18 @@ def p():
     print("")
 
 def ShowTaskList():
-        for t in tasks:
+    for t in tasks:
+        if t["type"] == "C":
+            print(f"{t['id']}. [{t['type']}] {t['name']}: {t['num']} / {t['increment']}")
+        else:
             print(f"{t['id']}. [{t['type']}] {t['name']}: {t['status']}")
 
-def AddTask(type: str, task_name: str):
+def AddTask(type: str, task_name: str, increment: int = None):
     global actual_id
-    tasks.append({"id": actual_id + 1, "type": type, "name": task_name, "status": "Unfinished"})
+    if type == "C":
+        tasks.append({"id": actual_id + 1, "type": type, "name": task_name, "increment": increment, "num": 0, "status": "Unfinished"})
+    else:
+        tasks.append({"id": actual_id + 1, "type": type, "name": task_name, "status": "Unfinished"})
     actual_id += 1
 
 def NoTaskDone():
@@ -35,6 +41,10 @@ def CheckTask(id: int, checker: str):
                     return t["name"]
                 case "status":
                     return t["status"]
+                case "increment":
+                    return t["increment"]
+                case "num":
+                    return t["num"]
     return None
 
 def EditTask(id: int, checker: str, alt):
@@ -49,6 +59,8 @@ def EditTask(id: int, checker: str, alt):
                     t["status"] = alt
                 case "id":
                     t["id"] = alt
+                case "increment":
+                    t["increment"] = alt
 
 # ritual de início
 print("Hello, world!")
@@ -71,7 +83,7 @@ tasks = [
     {"id": 4, "type": "S", "name": "Feed the fish", "status": "Done"},
     {"id": 5, "type": "S", "name": "Feed the baby", "status": "Done"}
 ]
-actual_id = 1
+actual_id = 5
 
 print("""
 Type [help] if you need a reminder of the commands.""")
@@ -102,7 +114,7 @@ while True:
     match user_input:
         case "HELP":
             print("""
-Type [add] to enter your tasks (1 per time).
+Type [add] to enter your tasks.
 Type [del] to delete one.
 Type [done] and the task number when you complete one task (done a timed task will lead you into a timer).
 Type [undo] to undo a task.
@@ -111,7 +123,10 @@ Type [close] to end the program.""")
             
         case "DONE":
             print("""
-Type the number of the task you want to mark as done.
+Type the number of the task you want to mark as done:
+A Single task will just be marked as done;
+A CheckList one will add the number that you want to te counter (protip: type [the task number] Q to quickly add one);
+A Timed one will lead you into a timer.
 Type [end] to stop.
 """)
 
@@ -136,7 +151,30 @@ Type [end] to stop.
                     continue
 
                 if 0 < done_input <= len(tasks):
-                    EditTask(done_input, "status", "Done")
+                    if CheckTask(done_input, "type") == "S":
+                        EditTask(done_input, "status", "Done")
+                    elif CheckTask(done_input, "type") == "C":
+                        p()
+                        print("How much?")
+                        while True:
+                            num = get_input().strip()
+                            try:
+                                int(num)
+                            except ValueError:
+                                p()
+                                print("Thats not a number")
+                                continue
+                            if 0 > num:
+                                print("Thats a negative number. If you want to decrease, type 0 and go to the [undo] menu.")
+                                continue
+                            if num > CheckTask(done_input, "num"):
+                                print("Thats more than the limit.")
+                                continue
+                            for t in tasks:
+                                if t["id"] == done_input:
+                                    t["increment"] += num
+                            
+                        
                     p()
                     ShowTaskList()
                     print("Continue.")
@@ -206,8 +244,26 @@ Type [end] to stop inputing tasks."""
                 if parts[0] not in ["C", "S", "T"]:
                     print("Please, input a valid type")
                     continue
-
-                AddTask(parts[0], parts[1])
+                
+                if parts [0] == "C":
+                    p()
+                    print("Type the quantity of that task:")
+                    while True:
+                        quantidy = get_input().strip()
+                        try:
+                            quantidy = int(quantidy)
+                        except ValueError:
+                            print("That's not a valid number.")
+                            p()
+                            continue
+                        if quantidy < 1:
+                            print("That's not a valid number.")
+                            p()
+                            continue
+                        AddTask(parts[0], parts[1], quantidy)
+                        break
+                else:
+                    AddTask(parts[0], parts[1])
                 ShowTaskList()
                 print("Continue.")
                 p()
@@ -254,7 +310,7 @@ If yes, type [y], else type anyting.
 
             if clear_input == "Y":
                 tasks = []
-                actual_id = 1
+                actual_id = 0
                 p()
                 print("All tasks has been deleted.")
                 p()
