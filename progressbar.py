@@ -91,10 +91,8 @@ def ShowTaskList():
             print(f"{t['id']}. [{t['type']}] {t['name']}, {ShowTime(t['timer'])}: {t['status']}")
 
 
-# ritual de início
-print("Hello, world!")
-
 # Agora, começo do projeto PROGRESS BAR, HELL YEAH1!1!!!1111!1
+print("---------------------------------------------------")
 print("""Welcome to Progress Bar!
 Type [add] to enter your tasks.
 Type [del] to delete one.
@@ -105,12 +103,9 @@ Type [clear] to delete all the tasks.
 Type [close] to end program.""")
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO"]
 
-tasks = [
-    {"id": 1, "type": "S", "name": "Feed the cat", "status": "Unfinished"},
-    {"id": 2, "type": "T", "name": "Play with the dog", "timer": 15, "status": "Unfinished"},
-    {"id": 3, "type": "C", "name": "Feed the horse", "num": 2, "cl_final": 3},
-]
-actual_id = 3
+tasks = []
+actual_id = 0
+pb_type = True
 
 print("""
 Type [help] if you need a reminder of the commands.""")
@@ -119,6 +114,11 @@ while True:
     p()
     print("Type your command:")
     user_input = get_input().strip().upper()
+    if user_input == "Q PROGRESS":
+        pb_type = not pb_type
+        p()
+        print("Progress bar type changed.")
+        continue
 
     if user_input == "CLOSE":
         break
@@ -140,20 +140,26 @@ while True:
 
     match user_input:
         case "HELP":
+            print("---------------------------------------------------")
             print("""
 Type [add] to enter your tasks.
 Type [del] to delete one.
-Type [done] and the task number when you complete one task (marking a timed task will lead you into a timer).
+Type [done] and the task number when you complete one task.
+    Marking a timed task will lead you into a timer.
+    Type: Q [the task number] with a C task type to quickly add one check.
 Type [undo] to undo or decrease a task.
+    Type: Q [the task number] to quickly decrease all checks.
 Type [progress] when you want to check the tasks and the progress done.
+    You can change the visual type of the progress bar by typing [Q progress]
 Type [clear] to delete all the tasks.
-Type [close] to end program.""")
-            
+Type [close] to end program (note that you can't end the program inside a task menu).""")
+            print("---------------------------------------------------")
         case "DONE":
+            print("---------------------------------------------------")
             print("""
 Type the number of the task you want to mark as done:
 A Single task will just be marked as done;
-A CheckList one will add the number that you want to the counter (protip: type q [the task number] to quickly add one);
+A CheckList one will add the number that you want to the counter;
 A Timed one will lead you into a timer.
 Type [end] to stop.
 """)
@@ -164,7 +170,9 @@ Type [end] to stop.
                 p()
                 done_input = get_input().strip().upper()
                 if done_input == "END":
+                    print("---------------------------------------------------")
                     break
+
                 parts = done_input.split(maxsplit=1)
 
                 if parts[0] == "Q":
@@ -216,7 +224,7 @@ Type [end] to stop.
                         EditTask(done_input, "status", "Done")
                     elif CheckTask(done_input, "type") == "T":
                         print("""
-Are you sure? When you start this timer, you can no longer exit it while it is running.
+Are you sure? When you start this timer, you can no longer exit it while is running.
 Type [Y] to run.
 Type anything to cancel.""")
                         confirm = get_input().strip().upper()
@@ -248,6 +256,7 @@ Type anything to cancel.""")
                     print("Please, type a valid number inside the tasks index.")
 
         case "UNDO":
+            print("---------------------------------------------------")
             p()
             print("Type the number of the task you want to undo.")
             print("Type [end] to stop.")
@@ -260,6 +269,7 @@ Type anything to cancel.""")
                 undo_input = get_input().strip().upper()
                 parts = undo_input.split(maxsplit=1)
                 if undo_input == "END":
+                    print("---------------------------------------------------")
                     break
                 if parts[0] == "Q":
                     try:
@@ -314,7 +324,7 @@ Type anything to cancel.""")
                         decrease_num = GetNum()
                         if decrease_num - CheckTask(undo_input, "num") < 0:
                             p()
-                            print("That decrease to a negative number. If you want decrease all the task, type 0 and type q (the number of the task)")
+                            print("That decrease to a negative number. If you want decrease all the task, type 0 and then type q (the number of the task)")
                             continue
                         if decrease_num < 0:
                             p()
@@ -328,6 +338,7 @@ Type anything to cancel.""")
                 p()
 
         case "ADD":
+            print("---------------------------------------------------")
             description = """
 Please, input your task type and the task.
 Types:
@@ -343,6 +354,7 @@ Type [end] to stop inputting tasks."""
 
                 task_ender = task_input.strip().upper()
                 if task_ender == "END":
+                    print("---------------------------------------------------")
                     break
                 # Divide no primeiro espaço que encontrar num array
                 parts = task_input.split(maxsplit=1)
@@ -418,6 +430,7 @@ Type [end] to stop inputting tasks."""
                 continue   
             
         case "DEL":
+            print("---------------------------------------------------")
             print("""  
 Type the number of the task to delete it.  
 Type [end] to stop.        
@@ -428,6 +441,7 @@ Type [end] to stop.
                 del_input = get_input().strip().upper()
 
                 if del_input == "END":
+                    print("---------------------------------------------------")
                     break
 
                 try:
@@ -450,6 +464,7 @@ Type [end] to stop.
                     break
 
         case "CLEAR":
+            print("---------------------------------------------------")
             print("""
 Are you sure that you want to clear all the tasks?
 If yes, type [y], else type anyting.
@@ -462,8 +477,10 @@ If yes, type [y], else type anyting.
                 p()
                 print("All tasks have been deleted.")
                 p()
+                print("---------------------------------------------------")
 
         case "PROGRESS": 
+            print("---------------------------------------------------")
             p()
             ShowTaskList()
             tasks_done = 0
@@ -481,7 +498,13 @@ If yes, type [y], else type anyting.
 
             progress = int(tasks_done / tasks_remaining * 100)
             p()
+            if pb_type:
+                print(f"[{'█'*progress + '░' * (100 - progress)}]")
+            else:
+                print(f"[{'█' * int(progress/10) + '░' * int(10 - progress / 10)}]")
+            
             print(f"Progress: {progress}%")
 
             if progress == 100:
                 print("Congratulations, you did all the tasks!")
+            print("---------------------------------------------------")
