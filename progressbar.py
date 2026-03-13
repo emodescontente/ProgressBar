@@ -392,29 +392,29 @@ Type [end] to stop inputting tasks."""
                         time_input = get_input().strip().upper()
                         if time_input =="END":
                             break
-                        parts = time_input.split(maxsplit=1)
+                        partst = time_input.split(maxsplit=1)
                         if len(parts) != 2:
                             p()
                             print("Please, type only the time format and the time.")
                             continue
-                        if parts [0] not in ["S","M","H"]:
+                        if partst [0] not in ["S","M","H"]:
                             p()
                             print("Please, type a valid format.")
                             continue
                         try:
-                            parts[1] = int(parts[1])
+                            partst[1] = int(partst[1])
                         except ValueError:
                             p()
                             print("That's not a valid number.")
                             continue
                         timer = 0
-                        match parts[0]:
+                        match partst[0]:
                             case "S":
-                                timer += parts[1]
+                                timer += partst[1]
                             case "M":
-                                timer += (parts[1] * 60)
+                                timer += (partst[1] * 60)
                             case "H":
-                                timer += (parts[1] * 3600)
+                                timer += (partst[1] * 3600)
                         if timer < 0 and time - timer < 0:
                             p()
                             print("Can't do a negative timer, sorry.")
