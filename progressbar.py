@@ -90,6 +90,49 @@ def ShowTaskList():
         elif t["type"] == "T":
             print(f"{t['id']}. [{t['type']}] {t['name']}, {ShowTime(t['timer'])}: {t['status']}")
 
+def GetTimer():
+    time = 0
+    p()
+    print("Type the time to increment the timer.")
+    print("[S]: seconds, [M]: minutes, [H]: hours.")
+    print("It should be like: S 30, or S -10 if you want do decrement. Type [end] to stop.")
+    while True:
+        time_input = get_input().strip().upper()
+        if time_input =="END":
+            break
+        partst = time_input.split(maxsplit=1)
+        if len(partst) != 2:
+            p()
+            print("Please, type only the time format and the time.")
+            continue
+        if partst [0] not in ["S","M","H"]:
+            p()
+            print("Please, type a valid format.")
+            continue
+        try:
+            partst[1] = int(partst[1])
+        except ValueError:
+            p()
+            print("That's not a valid number.")
+            continue
+        timer = 0
+        match partst[0]:
+            case "S":
+                timer += partst[1]
+            case "M":
+                timer += (partst[1] * 60)
+            case "H":
+                timer += (partst[1] * 3600)
+        if timer < 0 and time - timer < 0:
+            p()
+            print("Can't do a negative timer, sorry.")
+            continue
+        time += timer
+        print(ShowTime(time))
+        print("Continue:")
+        continue
+    return time
+
 
 # Agora, começo do projeto PROGRESS BAR, HELL YEAH1!1!!!1111!1
 print("---------------------------------------------------")
@@ -101,8 +144,9 @@ Type [undo] to undo or decrease a task.
 Type [progress] when you want to check the tasks and the progress done.
 Type [clear] to delete all the tasks.
 Type [close] to end program.""")
-command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO"]
 
+command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO", "EDIT"]
+valid_types = ["S", "C", "T"]
 tasks = []
 actual_id = 0
 pb_type = True
@@ -149,15 +193,73 @@ Type [done] and the task number when you complete one task.
     Type: Q [the task number] with a C task type to quickly add one check.
 Type [undo] to undo or decrease a task.
     Type: Q [the task number] to quickly decrease all checks.
+Type [edit] to edit a task name or value.
 Type [progress] when you want to check the tasks and the progress done.
     You can change the visual type of the progress bar by typing [Q progress]
 Type [clear] to delete all the tasks.
 Type [close] to end program (note that you can't end the program inside a task menu).""")
             print("---------------------------------------------------")
+        case "EDIT":
+            print("---------------------------------------------------")
+            print("""Type the number of the task that you want to edit, then:
+Type [N] if you want to change the name.
+Type [V] if you want to change a vallue.
+It should be like: 1 N.
+Type [end] to stop.
+""")
+            ShowTaskList()
+            while True:
+                p()
+                edit_input = get_input().strip().upper().split(maxsplit=1)
+                if edit_input[0] == "END":
+                    break
+                try:
+                    edit_input[0] = int(edit_input[0])
+                except ValueError:
+                    print("Please, type a vaid number inside the index.")
+                    continue
+                if 0 > edit_input[0] > len(tasks) - 1:
+                    print("Please, type a vaid number inside the index.")
+                    continue
+                if edit_input[1] not in ["N", "V"]:
+                    print("Please, type a valid letter.")
+                    continue
+
+                if edit_input[1] == "N":
+                    name = input("New name: ")
+                    EditTask(edit_input[0], "name", name)
+                    p()
+                    ShowTaskList()
+                    continue
+                if edit_input[1] == "V":
+                    i = next((t for t in tasks if t["id"] == edit_input[0]), None)
+                    match i["type"]:
+                        case "S":
+                            print("That task does not have a vallue.")
+                            continue
+                        case "C":
+                            print("Type the new vallue of checks:")
+                            while True:
+                                val_input = get_input().strip()
+                                try:
+                                    val_input = int(val_input)
+                                except ValueError:
+                                    print("That's not  a number.")
+                                    continue
+                                if val_input < i["cl_final"]:
+                                    print("You canot change the vallue under the checks done.")
+                                    continue
+                                EditTask(i['id'], "num", val_input)
+                                break
+                        case "T":
+                            time = GetTimer()
+                            EditTask(i['id'], "timer", time)
+
+                
+
         case "DONE":
             print("---------------------------------------------------")
-            print("""
-Type the number of the task you want to mark as done:
+            print("""Type the number of the task you want to mark as done:
 A Single task will just be marked as done;
 A CheckList one will add the number that you want to the counter;
 A Timed one will lead you into a timer.
@@ -383,46 +485,7 @@ Type [end] to stop inputting tasks."""
                 elif parts[0] == "S":
                     AddTask("S", parts[1])
                 elif parts[0] == "T":
-                    time = 0
-                    p()
-                    print("Type the time to increment the timer.")
-                    print("[S]: seconds, [M]: minutes, [H]: hours.")
-                    print("It should be like: S 30, or S -10 if you want do decrement. Type [end] to stop.")
-                    while True:
-                        time_input = get_input().strip().upper()
-                        if time_input =="END":
-                            break
-                        partst = time_input.split(maxsplit=1)
-                        if len(parts) != 2:
-                            p()
-                            print("Please, type only the time format and the time.")
-                            continue
-                        if partst [0] not in ["S","M","H"]:
-                            p()
-                            print("Please, type a valid format.")
-                            continue
-                        try:
-                            partst[1] = int(partst[1])
-                        except ValueError:
-                            p()
-                            print("That's not a valid number.")
-                            continue
-                        timer = 0
-                        match partst[0]:
-                            case "S":
-                                timer += partst[1]
-                            case "M":
-                                timer += (partst[1] * 60)
-                            case "H":
-                                timer += (partst[1] * 3600)
-                        if timer < 0 and time - timer < 0:
-                            p()
-                            print("Can't do a negative timer, sorry.")
-                            continue
-                        time += timer
-                        print(ShowTime(time))
-                        print("Continue:")
-                        continue
+                    time = GetTimer()
                     AddTask("T", parts[1], time)
                 ShowTaskList()
                 print("Continue.")
@@ -435,8 +498,9 @@ Type [end] to stop inputting tasks."""
 Type the number of the task to delete it.  
 Type [end] to stop.        
                   """) 
+            
+            ShowTaskList() 
             while True:
-                ShowTaskList() 
                 p()
                 del_input = get_input().strip().upper()
 
@@ -450,6 +514,9 @@ Type [end] to stop.
                     p()
                     print("That's not a number.")
                     p()
+                    continue
+                if 0 > del_input > len(tasks) - 1:
+                    print("Please, type a valid number inside the index.")
                     continue
 
                 tasks.pop(del_input - 1)
