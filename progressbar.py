@@ -94,16 +94,18 @@ def ShowLists():
     num = 1
     p()
     for list_name, task in task_list.items():
-        print(f"{num}. {list_name}:")
-        for t in task:
-            if t["type"] == "C":
-                print(f"  {t['id']}. [{t['type']}] {t['name']}: {t['num']}/{t['cl_final']}")
-            elif t["type"] == "S":
-                print(f"  {t['id']}. [{t['type']}] {t['name']}: {t['status']}")
-            elif t["type"] == "T":
-                print(f"  {t['id']}. [{t['type']}] {t['name']}, {ShowTime(t['timer'])}: {t['status']}")
+        print(f"{num}°. {list_name}")
+        if task == []:
+            print("   This list is empty.")
+        else:
+            for t in task:
+                if t["type"] == "C":
+                    print(f"   {t['id']}. [{t['type']}] {t['name']}: {t['num']}/{t['cl_final']}")
+                elif t["type"] == "S":
+                    print(f"   {t['id']}. [{t['type']}] {t['name']}: {t['status']}")
+                elif t["type"] == "T":
+                    print(f"   {t['id']}. [{t['type']}] {t['name']}, {ShowTime(t['timer'])}: {t['status']}")
         num += 1
-        p()
 
 def GetTimer():
     time = 0
@@ -203,23 +205,21 @@ while True:
             print("---------------------------------------------------")
             print("""Here you can see your lists of tasks.
     * = number of the list.
-Type * [move] to move to the tasks of the list.
 Type [create] [name of the new list] to create a new list.
-Type * [del] to delete a list.
-Type * [edit] to edit a list name.
-Type [end] to stop""")
+Type [move] * to move to the tasks of the list.
+Type [del] * to delete a list.
+Type [edit] * to edit a list name.
+Type [end] to stop.""")
             ShowLists()
             valid_input = ['MOVE', 'CREATE', 'DEL', 'EDIT']
             while True:
                 p()
-                list_input = get_input().strip().upper().split(maxsplit=1)
+                list_input = get_input().strip().split(maxsplit=1)
+                list_input[0] = list_input[0].upper()
                 if list_input[0] == "END":
+                    print("---------------------------------------------------")
                     break
-                if list_input[0] != "CREATE":
-                    if list_input[1] not in valid_input:
-                        print("Please, type a valid input.")
-                        continue
-
+                
                 if list_input[0] == "CREATE":
                     for l in task_list:
                         exists = any(list_input[1].upper() == l.upper() for l in task_list)
@@ -230,41 +230,46 @@ Type [end] to stop""")
                     ShowLists()
                     print("Continue.")
                     continue
+                if list_input[0] not in valid_input:
+                    print("Please, type a valid input.")
+                    continue
                 try:
-                    list_input[0] = int(list_input[0])
+                    list_input[1] = int(list_input[1])
                 except ValueError:
                     print("Please, type a valid number inside the index")
-                if 0 >= list_input[0] > len(task_list):
+                if 0 >= list_input[1] > len(task_list):
                     print("Please, type a valid number inside the index.")
                 
-                match list_input[1]:
+                match list_input[0]:
                     case "MOVE":
                         list_name = list(task_list.keys())
-                        index = int(list_input[0]) - 1
+                        index = list_input[1] - 1
                         name = list_name[index]
-                        actual_list = task_list[name]
+                        actual_list = name
                         print(f"Now, you are in the list: {actual_list}")
                         ShowLists
                         print("Continue.")
                         continue
                     case 'DEL':
-                        task_list.pop(list_input[0] - 1)
+                        list_name = list(task_list.keys())
+                        index = list_input[1] - 1
+                        name = list_name[index]
+                        task_list.pop(name)
                         ShowLists()
                         print("Continue.")
+                        continue
                     case 'EDIT':
                         new_name = input("New name: ") 
                         
                         list_name = list(task_list.keys())
-                        index = int(list_input[0]) - 1
-                        old_name = list_name[index]
-                        if actual_list == old_name:
+                        index = list_input[1] - 1
+                        name = list_name[index]
+                        if actual_list == name:
                             actual_list = new_name
-                        task_list[new_name] = task_list.pop(old_name)
+                        task_list[new_name] = task_list.pop(name)
                         ShowLists()
                         print("The name of the list has been renamed.")
                         continue
-                
-
                 
 
         case "HELP":
