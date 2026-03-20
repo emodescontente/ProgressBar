@@ -246,6 +246,8 @@ Type [end] to stop.""")
                         index = list_input[1] - 1
                         name = list_name[index]
                         actual_list = name
+                        list_lenght = list(task_list.values())
+                        actual_id = len(list_lenght[index])
                         print(f"Now, you are in the list: {actual_list}")
                         ShowLists
                         print("Continue.")
