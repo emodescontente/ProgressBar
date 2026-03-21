@@ -5,7 +5,7 @@ def get_input():
         valor = input("> ")
         if valor != "":
             return valor
-        print("Please, type something.")
+        print("Por favor, escreva alguma coisa.")
 
 def p():
     print("")
@@ -15,15 +15,15 @@ def AddTask(type: str, task_name: str, additional: int = None):
     if type == "C":
         task_list[actual_list].append({"id": actual_id + 1, "type": type, "name": task_name,"num": 0, "cl_final": additional})
     elif type == "S":
-        task_list[actual_list].append({"id": actual_id + 1, "type": type, "name": task_name, "status": "Unfinished"})
+        task_list[actual_list].append({"id": actual_id + 1, "type": type, "name": task_name, "status": "Inacabado"})
     elif type == "T":
-        task_list[actual_list].append({"id": actual_id + 1, "type": type, "name": task_name, "timer": additional, "status": "Unfinished"})
+        task_list[actual_list].append({"id": actual_id + 1, "type": type, "name": task_name, "timer": additional, "status": "Inacabado"})
     actual_id += 1
 
 def NoTaskDone():
     for t in task_list[actual_list]:
         if t['type'] != 'C':
-            if t["status"] == "Done":
+            if t["status"] == "Feito":
                 return False 
         else:
             if t['num'] != 0:
@@ -69,7 +69,6 @@ def EditTask(id: int, checker: str, alt):
                 case "timer":
                     t["timer"] = alt
 
-
 def ShowTime(time):
     horas, resto = divmod(time, 3600)
     minutos, segundos = divmod(resto, 60)
@@ -91,7 +90,7 @@ def ShowLists():
     for list_name, task in task_list.items():
         print(f"{num}°. {list_name}")
         if task == []:
-            print("   This list is empty.")
+            print("   Essa lista está vazia.")
         else:
             for t in task:
                 if t["type"] == "C":
@@ -108,8 +107,9 @@ def CheckNum(num):
         return num
     except ValueError:
         p()
-        print("Please, type a valid number inside the index.")
+        print("Por favor, digite um número válido dentro da lista.")
         return False
+
 def GetNum():
     while True:
         num = get_input().strip()
@@ -118,15 +118,15 @@ def GetNum():
             return num
         except ValueError:
             p()
-            print("Please, type a valid number inside the index.")
+            print("Por favor, digite um número válido dentro da lista.")
             continue
 
 def GetTimer():
     time = 0
     p()
-    print("Type the time to increment the timer.")
-    print("[S]: seconds, [M]: minutes, [H]: hours.")
-    print("It should be like: S 30, or S -10 if you want do decrement. Type [end] to stop.")
+    print("Escreva o tempo para aumentar o timer.")
+    print("[S]: segundos, [M]: minutos, [H]: horas.")
+    print("Deve estar assim: S 30, ou: S -10 se você quiser diminuir. Digite [end] para parar.")
     while True:
         time_input = get_input().strip().upper()
         if time_input =="END":
@@ -134,17 +134,17 @@ def GetTimer():
         parts_timer = time_input.split(maxsplit=1)
         if len(parts_timer) != 2:
             p()
-            print("Please, type only the time format and the time.")
+            print("Por favor, digite apenas o formato e o tempo.")
             continue
         if parts_timer [0] not in ["S","M","H"]:
             p()
-            print("Please, type a valid format.")
+            print("Por favor, digite um formato válido.")
             continue
         try:
             parts_timer[1] = int(parts_timer[1])
         except ValueError:
             p()
-            print("Please, type a valid number.")
+            print("Por favor, digite um número válido.")
             continue
         number = parts_timer[1]
         timer = 0
@@ -157,47 +157,45 @@ def GetTimer():
                 timer += (number * 3600)
         if timer < 0 and time + timer < 0:
             p()
-            print("Can't do a negative timer, sorry.")
+            print("Não posso fazer um timer negativo, desculpe.")
             continue
         time += timer
+        p()
         print(ShowTime(time))
+        p()
         print("Continue:")
         continue
     return time
 
-
-
-
-# Agora, começo do projeto PROGRESS BAR, HELL YEAH1!1!!!1111!1
 print("---------------------------------------------------")
-print("""Welcome to Progress Bar!
-Type [add] to enter your tasks.
-Type [del] to delete one.
-Type [done] to mark a task as done.
-Type [undo] to undo or decrease a task.
-Type [edit] to edit a task name or value.
-Type [progress] to check the tasks and the progress done.
-Type [clear] to delete all the tasks.
-Type [list] to see and change trought task lists.
-Type [close] to end program (note that you can't end the program inside a task menu).""")
+print("""Bem-vindo à Barra de Progresso!
+Digite [add] para adicionar suas tarefas.
+Digite [del] para deletar uma tarefa.
+Digite [done] para marcar tarefas como pronta.
+Digite [undo] para desfazer ou diminuir uma tarefa.
+Digite [edit] para editar o nome ou valor de uma tarefa.
+Digite [progress] para ver as tarefas e o progresso feito.
+Digite [clear] para deletar todas as tarefas.
+Digite [list] para ver e mudar entre listas de tarefas.
+Digite [close] para fechar o programa (note que você não pode sair dentro de um menu).""")
 
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO", "EDIT", "LIST"]
 valid_types = ["S", "C", "T"]
-task_list = {"Tasks": []}
-actual_list = "Tasks"
+task_list = {"Tarefas": []}
+actual_list = "Tarefas"
 actual_id = 0
 pb_type = True
 print("""
-Type [help] if you need a reminder or a more detailed description of the commands.""")
+Digite [help] se você precisa relembrar os comandos ou uma descrição mais detalhada dos comandos.""")
 
 while True:
     p()
-    print("Type your command:")
+    print("Digite seu comando:")
     user_input = get_input().strip().upper()
     if user_input == "Q PROGRESS":
         pb_type = not pb_type
         p()
-        print("Progress bar type changed.")
+        print("Tipo da barra de progresso mudada.")
         continue
 
     if user_input == "CLOSE":
@@ -205,29 +203,29 @@ while True:
 
     if user_input not in command_list:
         p()
-        print("Please, type a valid command.")
+        print("Por favor, digite um comando válido.")
         continue
 
     if user_input not in ["ADD", "HELP", "END", "LIST"] and task_list[actual_list] == []:
         p()
-        print("Try start by adding tasks with [add]")
+        print("Tente começar adicionando tarefas com [add]")
         continue
 
     if user_input == "UNDO" and NoTaskDone():
         p()
-        print("No task is done, type [done] if you want to mark a task as done.")
+        print("Nenhuma tarefa está pronta, digite [done] se você quiser marcar uma tarefa como pronta.")
         continue
 
     match user_input:
         case 'LIST':
             print("---------------------------------------------------")
-            print("""Here you can see your lists of tasks.
-    * = number of the list.
-Type [create] [name of the new list] to create a new list.
-Type [move] * to move to the tasks of the list.
-Type [del] * to delete a list.
-Type [edit] * to edit a list name.
-Type [end] to stop.
+            print("""Aqui você consegue ver as listas de tarefas.
+    * = número da lista.
+Digite [create] [nome da lista] para criar uma nova lista.
+Digite [move] * para mudar de tarefas com a lista.
+Digite [del] * para deletar uma lista.
+Digite [edit] * para editar o nome de uma lista.
+Digite [end] para parar.
 """)
             ShowLists()
             valid_input = ['MOVE', 'CREATE', 'DEL', 'EDIT']
@@ -243,7 +241,7 @@ Type [end] to stop.
                     for l in task_list:
                         exists = any(list_input[1].upper() == l.upper() for l in task_list)
                         if exists:
-                            print("A list with that name already exists.")
+                            print("Uma lista com esse nome já existe.")
                             break
                     task_list.update({list_input[1]: []})
                     ShowLists()
@@ -252,17 +250,17 @@ Type [end] to stop.
 
                 if len(list_input) != 2:
                     p() # type: ignore
-                    print('Please, type both comand and the list number.')
+                    print('Por favor, digite o comando e o número da lista.')
 
                 if list_input[0] not in valid_input:
-                    print("Please, type a valid input.")
+                    print("Por favor, digite um comando válido.")
                     continue
                 list_number = CheckNum(list_input[1]) # type: ignore
                 if list_number == False:
                     continue
                 if 0 > list_number or list_number > len(task_list):
                     p()
-                    print('Please, type a valid number inside the index.')
+                    print('Por favor, digite um número válido dentro da lista.')
                     continue
                 match list_input[0]:
                     case "MOVE":
@@ -274,7 +272,7 @@ Type [end] to stop.
                         actual_id = len(list_lenght[index])
                         p()
                         ShowLists()
-                        print(f"Now, you are in the list: {actual_list}")
+                        print(f"Agora você está na lista: {actual_list}")
                         continue
                     case 'DEL':
                         list_name = list(task_list.keys())
@@ -283,10 +281,10 @@ Type [end] to stop.
                         task_list.pop(name)
                         p()
                         ShowLists()
-                        print("The list has been deleted.")
+                        print("A lista foi deletada.")
                         continue
                     case 'EDIT':
-                        new_name = input("New name: ") 
+                        new_name = input("Novo nome: ") 
                         
                         list_name = list(task_list.keys())
                         index = list_number - 1
@@ -295,34 +293,33 @@ Type [end] to stop.
                             actual_list = new_name
                         task_list[new_name] = task_list.pop(name)
                         p()
-                        print("The name of the list has been renamed.")
+                        print("A lista foi renomeada.")
                         ShowLists()
                         continue
                 
-
         case "HELP":
             print("---------------------------------------------------")
-            print("""Type [add] to enter your tasks.
-Type [del] to delete one.
-Type [done] to mark a task as done.
-    Marking a timed task will lead you into a timer.
-    Type: Q [the task number] with a C task type to quickly add one check.
-Type [undo] to undo or decrease a task.
-    Type: Q [the task number] to quickly decrease all checks.
-Type [edit] to edit a task name or value.
-Type [progress] when you want to check the tasks and the progress done.
-    You can change the visual type of the progress bar by typing [Q progress].
-Type [clear] to delete all the tasks.
-Type [lists] to see and change trought task lists.
-Type [close] to end program (note that you can't end the program inside a task menu).""")
+            print("""Digite [add] para adicionar suas tarefas.
+Digite [del] para deletar uma.
+Digite [done] para marcar uma tarefa como pronta.
+    Marcar uma tarefa de tempo vai te levar a um timer.
+    Digite: Q [número da tarefa] com uma tarefa do tipo Checklist para rapidamente adicionar uma marcação.
+Digite [undo] para desfazer ou diminuir uma tarefa.
+    Digite: [número da tarefa] com uma tarefa do tipo Checklist para rapidamente desfazer todas as marcações.
+Digite [edit] para editar o nome ou valor de uma tarefa.
+Digite [progress] para ver as tarefas e o progresso feito.
+    Você consegue trocar o visual da barra de progresso digitando [Q progress].
+Digite [clear] para deletar todas as tarefas.
+Digite [lists] para ver e trocar entre listas de tarefas.
+Digite [close] para sair do programa (note que você não pode sair dentro de um menu).""")
             print("---------------------------------------------------")
         case "EDIT":
             print("---------------------------------------------------")
-            print("""Type the number of the task that you want to edit, then:
-Type [N] if you want to change the name.
-Type [V] if you want to change a vallue.
-It should be like: 1 N.
-Type [end] to stop.
+            print("""Digite o número da tarefa que você quer editar, então:
+Digite [N] se você quer trocar o nome.
+Digite [V] se você quer trocar o valor.
+Deve estar tipo: 1 N.
+Digite [end] para parar.
 """)
             ShowTaskList()
             while True:
@@ -334,27 +331,27 @@ Type [end] to stop.
                     break
                 if 2 > len(edit_input) or len(edit_input) > 3:
                     p()
-                    print('Please, input only the task number and what you want to edit.')
+                    print('Por favor, digite apenas o número da tarefa e o que você quer editar.')
                     continue
                 number = CheckNum(edit_input[0])
                 if not number:
                     continue
                 if 0 > number > len(task_list[actual_list]) - 1:
                     p()
-                    print("Please, type a vaid number inside the index.")
+                    print("Por favor, digite um número válido dentro da lista.")
                     continue
                 if edit_input[1] not in ["N", "V"]:
                     p()
-                    print("Please, type a valid input.")
+                    print("Por favor, digite um comando válido.")
                     continue
 
                 if edit_input[1] == "N":
-                    name = input("New name: ")
+                    name = input("Novo nome: ")
                     EditTask(number, "name", name)
                     p()
                     ShowTaskList()
                     p()
-                    print('The task has been renamed.')
+                    print('A tarefa foi renomeada.')
                     continue
 
                 if edit_input[1] == "V":
@@ -363,10 +360,10 @@ Type [end] to stop.
                     match i["type"]:
                         case "S":
                             p()
-                            print("That task does not have a vallue.")
+                            print("Essa tarefa não tem um valor.")
                             continue
                         case "C":
-                            print("Type the new vallue of checks:")
+                            print("Digite o novo número de checks:")
                             while True:
                                 val_input = get_input().strip()
                                 vallue = CheckNum(val_input)
@@ -374,31 +371,29 @@ Type [end] to stop.
                                     continue
 
                                 if vallue < i["num"]:
-                                    print("You canot change the vallue under the checks done.")
+                                    print("Você não pode mudar o valor abaixo das marcações.")
                                     continue
                                 i['cl_final'] = vallue
                                 p()
                                 ShowTaskList()
                                 p()
-                                print('The task has been edited.')
+                                print('A tarefa foi editada.')
                                 break
                         case "T":
                             time = GetTimer()
                             p()
                             ShowTaskList()
                             p()
-                            print('The task has been edited.')
+                            print('A tarefa foi editada.')
                             EditTask(i['id'], "timer", time)
-
-                
 
         case "DONE":
             print("---------------------------------------------------")
-            print("""Type the number of the task you want to mark as done.
-A Single task will just be marked as done;
-A CheckList one will add the number that you want to the checks counter;
-A Timed one will lead you into a timer.
-Type [end] to stop.
+            print("""Digite o número da tarefa que você deseja marcar como feita.
+Uma tarefa do tipo Única será apenas marcada como feita;
+Uma tarefa do tipo Checklist vai adicionar o número que você quiser ao contador;
+Uma tarefa de Tempo te levará a um timer.
+Digite [end] para parar.
 """)
 
             ShowTaskList()
@@ -415,7 +410,7 @@ Type [end] to stop.
                 if parts[0] == "Q":
                     if len(parts) != 2:
                         p()
-                        print('Please, type the task number next time.')
+                        print('Por favor, digite o número da tarefa na próxima vez.')
                         continue
                     task_id = CheckNum(parts[1])
                     if not task_id:
@@ -423,7 +418,7 @@ Type [end] to stop.
                     task_found = next((t for t in task_list[actual_list] if t["id"] == task_id), None)
 
                     if not task_found:
-                        print("This task does not exist")
+                        print("Esta tarefa não existe.")
                         continue
                     if task_found["type"] == "C":
                         if task_found["num"] < task_found["cl_final"]:
@@ -434,11 +429,11 @@ Type [end] to stop.
                             continue
                         else:
                             p()
-                            print("This task is already done.")
+                            print("Esta tarefa já está pronta.")
                             continue
                     else:
                         p()
-                        print("The type of the task is not [C].")
+                        print("O tipo da tarefa não é [C].")
                         continue
                 
                 done_input = CheckNum(done_input)
@@ -446,41 +441,41 @@ Type [end] to stop.
                     continue
                 if 0 > done_input or done_input > len(task_list[actual_list]):
                     p()
-                    print('Please, type a valid number inside the index.') 
+                    print('Por favor, digite um número válido dentro da lista.') 
                     continue
                 task = 0
                 for t in task_list[actual_list]:
                     if t["id"] == done_input:
                         task = t
-                if (task["type"] in ["S", "T"] and task["status"] == "Done") or (task["type"] == "C" and task["num"] == task["cl_final"]):
+                if (task["type"] in ["S", "T"] and task["status"] == "Feito") or (task["type"] == "C" and task["num"] == task["cl_final"]):
                     p()
-                    print("This task is already done.")
+                    print("Esta tarefa já está pronta.")
                     continue
 
                 if 0 < done_input <= len(task_list[actual_list]):
                     if CheckTask(done_input, "type") == "S":
-                        EditTask(done_input, "status", "Done")
+                        EditTask(done_input, "status", "Feito")
                     elif CheckTask(done_input, "type") == "T":
                         print("""
-Are you sure? When you start this timer, you can no longer exit it while is running.
-Type [Y] to run.
-Type anything to cancel.""")
+Você tem certeza? Quando você iniciar este timer, não poderá mais sair enquanto ele estiver rodando.
+Digite [Y] para rodar.
+Digite qualquer outra coisa para cancelar.""")
                         confirm = get_input().strip().upper()
                         if confirm == "Y":
                             countdown_timer(CheckTask(done_input, "timer"))
-                            EditTask(done_input, "status", "Done")
+                            EditTask(done_input, "status", "Feito")
                     elif CheckTask(done_input, "type") == "C":
                         p()
-                        print("How much?")
+                        print("Quanto?")
                         while True:
                             num = GetNum()
                             if 0 > num:
                                 p()
-                                print("That's a negative number. If you want to decrease, type 0 and go to the [undo] menu.")
+                                print("Esse é um número negativo. Se você quiser diminuir, digite 0 e vá para o menu [undo].")
                                 continue
                             if num + CheckTask(done_input, "num") > CheckTask(done_input, "cl_final"):
                                 p()
-                                print("That's more than the limit.")
+                                print("Isso é mais do que o limite.")
                                 continue
                             for t in task_list[actual_list]:
                                 if t["id"] == done_input:
@@ -491,16 +486,15 @@ Type anything to cancel.""")
                     print("Continue.")
                 else:
                     p()
-                    print("Please, type a valid number inside the index.")
+                    print("Por favor, digite um número válido dentro da lista.")
 
         case "UNDO":
             print("---------------------------------------------------")
             p()
-            print("Type the number of the task you want to undo.")
-            print("Type [end] to stop.")
+            print("Digite o número da tarefa que você quer desfazer.")
+            print("Digite [end] para parar.")
             p()
             
-    
             while True:
                 ShowTaskList()
                 p()
@@ -512,7 +506,7 @@ Type anything to cancel.""")
                 if parts[0] == "Q":
                     if len(parts) != 2:
                         p()
-                        print('Please, type the task number next time')
+                        print('Por favor, digite o número da tarefa na próxima vez.')
                         continue
                     task_id = CheckNum(parts[1])
                     if not task_id:
@@ -520,7 +514,7 @@ Type anything to cancel.""")
                     task_found = next((t for t in task_list[actual_list] if t["id"] == task_id), None)
 
                     if not task_found:
-                        print("This task does not exist")
+                        print("Esta tarefa não existe.")
                         continue
                     if task_found["type"] == "C":
                         if task_found["num"] != 0:
@@ -530,43 +524,43 @@ Type anything to cancel.""")
                             continue
                         else:
                             p()
-                            print("This task is already empty.")
+                            print("Esta tarefa já está vazia.")
                             continue
                     else:
                         p()
-                        print("The type of the task is not [C].")
+                        print("O tipo da tarefa não é [C].")
                         continue
 
                 undo_input = CheckNum(undo_input)
                 if not undo_input:
                     continue
 
-                if CheckTask(undo_input, "status") == "Unfinished":
+                if CheckTask(undo_input, "status") == "Inacabado":
                     p()
-                    print("This task is not done.")
+                    print("Esta tarefa não está pronta.")
                     continue
                 if 0 > undo_input > actual_id:
                     p()
-                    print("Please, type a valid number inside the index.")
+                    print("Por favor, digite um número válido dentro da lista.")
                     continue
                 if CheckTask(undo_input, "num") == 0:
                     p()
-                    print("This task is already empty.")
+                    print("Esta tarefa já está vazia.")
                 
                 if CheckTask(undo_input, "type") in ["S", "T"]:
-                    EditTask(undo_input, "status", "Unfinished")
+                    EditTask(undo_input, "status", "Inacabado")
                 elif CheckTask(undo_input, "type") == "C":
                     p()
-                    print("How much you want to decrease?")
+                    print("Quanto você quer diminuir?")
                     while True:
                         decrease_num = GetNum()
                         if (CheckTask(undo_input, "num") - decrease_num) < 0:
                             p()
-                            print("That decrease to a negative number. If you want decrease all the task, type 0 and then type q (the number of the task)")
+                            print("Isso diminui para um número negativo. Se você quiser diminuir toda a tarefa, digite 0 e depois digite q (o número da tarefa).")
                             continue
                         if decrease_num < 0:
                             p()
-                            print("Please, type a positive number to decrease.")
+                            print("Por favor, digite um número positivo para diminuir.")
                             continue
                         for t in task_list[actual_list]:
                             if t["id"] == undo_input:
@@ -574,7 +568,7 @@ Type anything to cancel.""")
                         break
                 if NoTaskDone():
                     p()
-                    print('All taks has been set to unfinished.')
+                    print('Todas as tarefas foram marcadas como inacabadas.')
                     print("---------------------------------------------------")
                     break
                 print("Continue.")
@@ -582,13 +576,13 @@ Type anything to cancel.""")
 
         case "ADD":
             print("---------------------------------------------------")
-            description = """Here you can add tasks to your list.
-Types:
-[S] Single: tasks that only need complete 1 time. Example: Feed the cat.
-[C] CheckList: tasks that need complete various times. Example: Homeworks done.
-[T] Timed: tasks that need time. Example: Reading time
-It should be like: S Feed the cat
-Type [end] to stop inputting tasks."""
+            description = """Aqui você pode adicionar tarefas à sua lista.
+Tipos:
+[S] Única (Single): tarefas que só precisam ser concluídas 1 vez. Exemplo: Alimentar o gato.
+[C] Checklist: tarefas que precisam ser concluídas várias vezes. Exemplo: Dever de casa.
+[T] Tempo (Timed): tarefas que exigem tempo. Exemplo: Tempo de leitura.
+Deve ficar assim: S Alimentar o gato
+Digite [end] para parar de adicionar tarefas."""
 
             print(description)
             while True:
@@ -604,21 +598,21 @@ Type [end] to stop inputting tasks."""
 
                 if len(parts) < 2:
                     p()
-                    print("Please, input both the task type and the task name.")
+                    print("Por favor, digite tanto o tipo da tarefa quanto o nome da tarefa.")
                     continue
 
                 if parts[0] not in ["C", "S", "T"]:
                     p()
-                    print("Please, type a valid type")
+                    print("Por favor, digite um comando válido.")
                     continue
                 
                 if parts [0] == "C":
                     p()
-                    print("Type how much checks (times it need be done):")
+                    print("Digite quantos checks (quantas vezes precisa ser feita):")
                     while True:
                         quantity = GetNum()
                         if quantity < 1:
-                            print("That's not a valid number.")
+                            print("Isso não é um número válido.")
                             p()
                             continue
                         AddTask("C", parts[1], quantity)
@@ -631,14 +625,14 @@ Type [end] to stop inputting tasks."""
                 p()
                 ShowTaskList()
                 p()
-                print("Task added.")
+                print("Tarefa adicionada.")
                 p()
                 continue   
             
         case "DEL":
             print("---------------------------------------------------")
-            print("""Type the number of the task to delete it.  
-Type [end] to stop.        
+            print("""Digite o número da tarefa para deletá-la.  
+Digite [end] para parar.        
                   """) 
             
             ShowTaskList() 
@@ -654,7 +648,7 @@ Type [end] to stop.
                 if not del_input:
                     continue
                 if 0 > del_input > len(task_list[actual_list]) - 1:
-                    print("Please, type a valid number inside the index.")
+                    print("Por favor, digite um número válido dentro da lista.")
                     continue
 
                 task_list[actual_list].pop(del_input - 1)
@@ -665,16 +659,16 @@ Type [end] to stop.
                 p()
                 ShowTaskList()
                 p()
-                print("Task deleted")
+                print("Tarefa deletada")
 
                 if task_list[actual_list] == []:
-                    print ("You deleted all the tasks.")
+                    print ("Você deletou todas as tarefas.")
                     break
 
         case "CLEAR":
             print("---------------------------------------------------")
-            print("""Are you sure that you want to clear all the tasks?
-If yes, type [y], else type anyting.
+            print("""Tem certeza de que deseja apagar todas as tarefas?
+Se sim, digite [y], senão digite qualquer outra coisa.
 """)
             clear_input = get_input().strip().upper()
 
@@ -682,7 +676,7 @@ If yes, type [y], else type anyting.
                 task_list[actual_list] = []
                 actual_id = 0
                 p()
-                print("All tasks have been deleted.")
+                print("Todas as tarefas foram deletadas.")
                 p()
                 print("---------------------------------------------------")
 
@@ -694,23 +688,21 @@ If yes, type [y], else type anyting.
             for t in task_list[actual_list]:
                 if t["type"] in ["S", "T"]:
                     tasks_remaining += 1
-                    if t["status"] == "Done":
+                    if t["status"] == "Feito":
                         tasks_done += 1
                 elif t["type"] == "C":
                     tasks_remaining += t["cl_final"]
                     tasks_done += t["num"]
 
-
-
-            progress = int(tasks_done / tasks_remaining * 100)
+            progress = int(tasks_done / tasks_remaining * 100) if tasks_remaining > 0 else 0
             p()
             if pb_type:
                 print(f"[{'█'*progress + '░' * (100 - progress)}]")
             else:
                 print(f"[{'█' * int(progress/10) + '░' * int(10 - progress / 10)}]")
             
-            print(f"Progress: {progress}%")
+            print(f"Progresso: {progress}%")
 
             if progress == 100:
-                print("Congratulations, you did all the tasks!")
+                print("Parabéns, você completou todas as tarefas!")
             print("---------------------------------------------------")
