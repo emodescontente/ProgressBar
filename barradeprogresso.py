@@ -177,7 +177,7 @@ Digite [edit] para editar o nome ou valor de uma tarefa.
 Digite [progress] para ver as tarefas e o progresso feito.
 Digite [clear] para deletar todas as tarefas.
 Digite [list] para ver e mudar entre listas de tarefas.
-Digite [close] para fechar o programa (note que você não pode sair dentro de um menu).""")
+Digite [close] para fechar o programa (ou ctrl+c).""")
 
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO", "EDIT", "LIST"]
 valid_types = ["S", "C", "T"]
@@ -241,6 +241,7 @@ Digite [end] para parar.
                     for l in task_list:
                         exists = any(list_input[1].upper() == l.upper() for l in task_list)
                         if exists:
+                            p()
                             print("Uma lista com esse nome já existe.")
                             break
                     task_list.update({list_input[1]: []})
@@ -253,6 +254,7 @@ Digite [end] para parar.
                     print('Por favor, digite o comando e o número da lista.')
 
                 if list_input[0] not in valid_input:
+                    p()
                     print("Por favor, digite um comando válido.")
                     continue
                 list_number = CheckNum(list_input[1]) # type: ignore
@@ -311,7 +313,7 @@ Digite [progress] para ver as tarefas e o progresso feito.
     Você consegue trocar o visual da barra de progresso digitando [Q progress].
 Digite [clear] para deletar todas as tarefas.
 Digite [lists] para ver e trocar entre listas de tarefas.
-Digite [close] para sair do programa (note que você não pode sair dentro de um menu).""")
+Digite [close] para sair do programa (ou ctrl+c).""")
             print("---------------------------------------------------")
         case "EDIT":
             print("---------------------------------------------------")
@@ -371,6 +373,7 @@ Digite [end] para parar.
                                     continue
 
                                 if vallue < i["num"]:
+                                    p()
                                     print("Você não pode mudar o valor abaixo das marcações.")
                                     continue
                                 i['cl_final'] = vallue
@@ -490,7 +493,6 @@ Digite qualquer outra coisa para cancelar.""")
 
         case "UNDO":
             print("---------------------------------------------------")
-            p()
             print("Digite o número da tarefa que você quer desfazer.")
             print("Digite [end] para parar.")
             p()

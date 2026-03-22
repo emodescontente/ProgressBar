@@ -179,7 +179,7 @@ Type [edit] to edit a task name or value.
 Type [progress] to check the tasks and the progress done.
 Type [clear] to delete all the tasks.
 Type [list] to see and change trought task lists.
-Type [close] to end program (note that you can't end the program inside a task menu).""")
+Type [close] to end program (or ctrl+c).""")
 
 command_list = ["ADD", "DEL", "DONE", "PROGRESS", "CLOSE", "HELP", "CLEAR", "UNDO", "EDIT", "LIST"]
 valid_types = ["S", "C", "T"]
@@ -314,7 +314,7 @@ Type [progress] when you want to check the tasks and the progress done.
     You can change the visual type of the progress bar by typing [Q progress].
 Type [clear] to delete all the tasks.
 Type [lists] to see and change trought task lists.
-Type [close] to end program (note that you can't end the program inside a task menu).""")
+Type [close] to end program (or ctrl+c).""")
             print("---------------------------------------------------")
         case "EDIT":
             print("---------------------------------------------------")
