@@ -1,5 +1,3 @@
-import time
-
 class Task:
     def __init__(self, type: str, name: str, complement):
         """_summary_
@@ -33,11 +31,11 @@ class Task:
             case 'S':
                 assert type(setter) == bool, f'The setter of the task {self} has to be a bool.'
                 self.complement = setter
-                self.__done = True if self.complement else False
+                self.__done = bool(self.complement)
             case 'C':
                 assert type(setter) == int, f'The setter of the task {self} has to be a int.'
                 self.checks = setter
-                self.__done = True if self.checks >= self.complement else False
+                self.__done = self.checks >= self.complement
             case 'T':
                 assert type(setter) == bool, f'The setter of the task {self} has to be a bool.'
                 self.__done = setter
